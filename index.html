@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ポトロ研修テスト</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root{
+      --bg:#fbf7fa;
+      --bg2:#fff6fb;
+      --card:#ffffffcc;
+      --text:#5a3d4a;
+      --muted:#8f7280;
+      --accent:#ff6cab;
+      --accent2:#ff9bc6;
+      --accent3:#ffd7e8;
+      --line:#f1d7e5;
+      --ok:#eafaf0;
+      --okline:#bfe8cf;
+      --warn:#fff5e8;
+      --warnline:#ffd8a8;
+      --perfect:#fff0f7;
+      --perfectline:#ffb6d1;
+      --shadow:0 10px 22px rgba(0,0,0,.05);
+      --radius:20px;
+    }
+
+    body{
+      margin:0;
+      font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      background:
+        radial-gradient(circle at top left, #fff8fc 0%, transparent 28%),
+        radial-gradient(circle at top right, #ffeaf4 0%, transparent 25%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+      color:var(--text);
+      line-height:1.85;
+      padding:24px;
+    }
+
+    .wrap{
+      max-width:860px;
+      margin:0 auto;
+    }
+
+    .hero{
+      background:linear-gradient(135deg, #fffafd, #fff1f7);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:28px 24px;
+      margin-bottom:20px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      right:-40px;
+      top:-40px;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,108,171,.18), rgba(255,108,171,0));
+      pointer-events:none;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--accent);
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(28px, 4vw, 40px);
+      line-height:1.25;
+      color:var(--text);
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+      margin:18px 0 0;
+    }
+
+    .info-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .info-card .label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+
+    .info-card .value{
+      font-size:16px;
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .panel{
+      background:var(--card);
+      backdrop-filter: blur(8px);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+
+    .panel-title{
+      margin:0 0 6px;
+      font-size:22px;
+      color:var(--accent);
+    }
+
+    .panel-sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .question{
+      background:#fff;
+      border:1px solid #f4dfe9;
+      border-radius:18px;
+      padding:18px 16px;
+      margin-bottom:14px;
+      transition:.2s ease;
+    }
+
+    .question:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(0,0,0,.04);
+    }
+
+    .q-head{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+
+    .q-num{
+      flex:0 0 auto;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#fff;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      box-shadow:0 6px 14px rgba(255,108,171,.25);
+    }
+
+    .q-text{
+      margin:2px 0 0;
+      font-weight:700;
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .choices{
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .choice{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      background:#fff9fc;
+      border:1px solid #f4dfe9;
+      border-radius:14px;
+      padding:11px 12px;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .choice:hover{
+      background:#fff2f8;
+      border-color:#efc7da;
+    }
+
+    .choice input{
+      margin-top:4px;
+      accent-color:var(--accent);
+      transform:scale(1.08);
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:999px;
+      padding:14px 22px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .btn-main{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#fff;
+      box-shadow:0 10px 20px rgba(255,108,171,.25);
+    }
+
+    .btn-main:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.02);
+    }
+
+    .btn-sub{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .btn-sub:hover{
+      background:#fff7fb;
+    }
+
+    #resultBox{
+      margin-top:20px;
+    }
+
+    .result{
+      border-radius:18px;
+      padding:18px 16px;
+      font-weight:700;
+      border:1px solid transparent;
+      box-shadow:var(--shadow);
+    }
+
+    .result strong{
+      font-size:22px;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .perfect{
+      background:var(--perfect);
+      border-color:var(--perfectline);
+    }
+
+    .pass{
+      background:var(--ok);
+      border-color:var(--okline);
+    }
+
+    .fail{
+      background:var(--warn);
+      border-color:var(--warnline);
+    }
+
+    .score-note{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
+    .certificate{
+      display:none;
+      margin-top:22px;
+      padding:26px 22px;
+      border-radius:24px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.98), rgba(255,245,250,.98));
+      border:2px solid #f0bfd5;
+      box-shadow:0 18px 36px rgba(0,0,0,.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .certificate.show{
+      display:block;
+      animation:fadeUp .35s ease;
+    }
+
+    .certificate::before,
+    .certificate::after{
+      content:"✦";
+      position:absolute;
+      font-size:32px;
+      color:rgba(255,108,171,.25);
+      font-weight:900;
+    }
+
+    .certificate::before{
+      left:18px;
+      top:12px;
+    }
+
+    .certificate::after{
+      right:18px;
+      bottom:12px;
+    }
+
+    .cert-inner{
+      border:1px dashed #efb4ce;
+      border-radius:18px;
+      padding:24px 18px;
+      text-align:center;
+      background:rgba(255,255,255,.72);
+    }
+
+    .cert-kicker{
+      color:var(--accent);
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.08em;
+      margin-bottom:10px;
+    }
+
+    .cert-title{
+      font-size:30px;
+      font-weight:900;
+      margin:0 0 14px;
+      color:#7a465c;
+    }
+
+    .cert-body{
+      margin:0 auto 14px;
+      max-width:560px;
+      color:var(--text);
+      font-size:16px;
+    }
+
+    .cert-name-row{
+      margin:18px auto 10px;
+      max-width:420px;
+      text-align:left;
+    }
+
+    .cert-name-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .cert-name-input{
+      width:100%;
+      border:1px solid #efc7da;
+      background:#fff;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:16px;
+      color:var(--text);
+      outline:none;
+    }
+
+    .cert-footer{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .mini-note{
+      margin-top:14px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .footer-note{
+      margin-top:18px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media (max-width: 640px){
+      body{ padding:14px; }
+      .hero, .panel{ padding:18px 16px; }
+      .q-text{ font-size:15px; }
+      .cert-title{ font-size:24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="badge">PO・TORO TRAINING TEST</div>
+      <h1>ポトロ研修理解度テスト</h1>
+      <p class="lead">
+        新人メイドさん向けの確認テストです。全10問・各10点・100点満点です。
+        100点以上（このテストでは実質100点）で合格証が表示されます。
+      </p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="label">問題数</span>
+          <span class="value">10問</span>
+        </div>
+        <div class="info-card">
+          <span class="label">配点</span>
+          <span class="value">1問10点</span>
+        </div>
+        <div class="info-card">
+          <span class="label">満点</span>
+          <span class="value">100点</span>
+        </div>
+        <div class="info-card">
+          <span class="label">合格証表示条件</span>
+          <span class="value">100点以上</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">テスト開始</h2>
+      <p class="panel-sub">マニュアルの内容を思い出しながら、もっとも適切な答えを選んでください。</p>
+
+      <form id="quizForm">
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">1</div>
+            <p class="q-text">メイド名を決める際に絶対にNGなのは？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q1" value="a"> 好きな食べ物の名前</label>
+            <label class="choice"><input type="radio" name="q1" value="b"> 本名や本名に関連する名前</label>
+            <label class="choice"><input type="radio" name="q1" value="c"> 好きなキャラクターの名前</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">2</div>
+            <p class="q-text">お給仕開始時間の何分前までに変身を完了する必要がありますか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q2" value="a"> 15分前</label>
+            <label class="choice"><input type="radio" name="q2" value="b"> 5分前</label>
+            <label class="choice"><input type="radio" name="q2" value="c"> 開始時刻ちょうど</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">3</div>
+            <p class="q-text">ファーストドリンク提供後、最初にセットするタイマーは何分ですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q3" value="a"> 20分</label>
+            <label class="choice"><input type="radio" name="q3" value="b"> 25分</label>
+            <label class="choice"><input type="radio" name="q3" value="c"> 30分</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">4</div>
+            <p class="q-text">ご主人様がご帰宅されたときの基本のご挨拶はどれですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q4" value="a"> こんにちはー♡</label>
+            <label class="choice"><input type="radio" name="q4" value="b"> いらっしゃいませー♡</label>
+            <label class="choice"><input type="radio" name="q4" value="c"> おかえりなさいませー♡</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">5</div>
+            <p class="q-text">延長をいただいた場合、1,000円の延長でポイントカードは何ポイントですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q5" value="a"> 1ポイント</label>
+            <label class="choice"><input type="radio" name="q5" value="b"> 2ポイント</label>
+            <label class="choice"><input type="radio" name="q5" value="c"> ポイントはつかない</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">6</div>
+            <p class="q-text">アルコール提供について正しいものはどれですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q6" value="a"> 一気飲みは盛り上がるのでOK</label>
+            <label class="choice"><input type="radio" name="q6" value="b"> 泥酔していても希望があれば提供する</label>
+            <label class="choice"><input type="radio" name="q6" value="c"> 一気飲み禁止で、泥酔している方への提供も禁止</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">7</div>
+            <p class="q-text">ご主人様から連絡先を聞かれた場合の対応として正しいのは？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q7" value="a"> LINEだけなら教える</label>
+            <label class="choice"><input type="radio" name="q7" value="b"> 絶対に教えない</label>
+            <label class="choice"><input type="radio" name="q7" value="c"> 仲良くなった常連さんには教える</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">8</div>
+            <p class="q-text">ご主人様との会話で特に大切なのはどれですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q8" value="a"> 自分がたくさん話して盛り上げること</label>
+            <label class="choice"><input type="radio" name="q8" value="b"> 相手の話を広げ、聞き上手になること</label>
+            <label class="choice"><input type="radio" name="q8" value="c"> できるだけ会話を短く終えること</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">9</div>
+            <p class="q-text">チェキに関する説明として正しいものはどれですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q9" value="a"> ご主人様との接触は記念なのでOK</label>
+            <label class="choice"><input type="radio" name="q9" value="b"> チェキ撮影時も触る・触られる行為は禁止</label>
+            <label class="choice"><input type="radio" name="q9" value="c"> チェキは何人写っても1枚1,000円</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="q-head">
+            <div class="q-num">10</div>
+            <p class="q-text">研修マニュアルの最後で、1番大切だとされていることは何ですか？</p>
+          </div>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="q10" value="a"> 売上を最優先にすること</label>
+            <label class="choice"><input type="radio" name="q10" value="b"> ご帰宅されたご主人様を笑顔でご出発させること</label>
+            <label class="choice"><input type="radio" name="q10" value="c"> ミスを絶対にしないこと</label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-main" onclick="checkAnswers()">採点する</button>
+          <button type="button" class="btn-sub" onclick="resetQuiz()">最初からやり直す</button>
+        </div>
+      </form>
+
+      <div id="resultBox"></div>
+
+      <div id="certificateBox" class="certificate">
+        <div class="cert-inner">
+          <div class="cert-kicker">CERTIFICATE OF PASS</div>
+          <h3 class="cert-title">合格証</h3>
+          <p class="cert-body">
+            あなたはポトロ研修理解度テストにおいて、優秀な成績を修められました。<br>
+            よって、ここにその達成をたたえ、合格を証します。
+          </p>
+
+          <div class="cert-name-row">
+            <div class="cert-name-label">メイド名</div>
+            <input id="maidName" class="cert-name-input" type="text" placeholder="ここにメイド名を入力してください" />
+          </div>
+
+          <p id="certScoreText" style="font-weight:800; font-size:18px; margin:14px 0 0; color:#7a465c;"></p>
+          <div class="cert-footer">PO・TORO 研修テスト</div>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        ※ 合格証は100点以上で表示されます。このテストの満点は100点のため、実際には100点で表示されます。
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const answers = {
+      q1: "b",
+      q2: "b",
+      q3: "b",
+      q4: "c",
+      q5: "a",
+      q6: "c",
+      q7: "b",
+      q8: "b",
+      q9: "b",
+      q10: "b"
+    };
+
+    function checkAnswers(){
+      let score = 0;
+      let unanswered = [];
+
+      for(const key in answers){
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if(!selected){
+          unanswered.push(key);
+        } else if(selected.value === answers[key]){
+          score += 10;
+        }
+      }
+
+      const resultBox = document.getElementById("resultBox");
+      const certificateBox = document.getElementById("certificateBox");
+      const certScoreText = document.getElementById("certScoreText");
+
+      let html = "";
+      let className = "result ";
+
+      if(unanswered.length > 0){
+        className += "fail";
+        html = `
+          <div class="${className}">
+            <strong>未回答の問題があります</strong>
+            すべての問題に回答してから採点してください。<br>
+            <div class="score-note">未回答数：${unanswered.length}問</div>
+          </div>
+        `;
+        resultBox.innerHTML = html;
+        certificateBox.classList.remove("show");
+        certScoreText.textContent = "";
+        return;
+      }
+
+      if(score >= 100){
+        className += "perfect";
+        html = `
+          <div class="${className}">
+            <strong>${score}点 / 100点</strong>
+            満点です！すばらしいです♡ 合格証が表示されました。<br>
+            <div class="score-note">研修内容をしっかり理解できています。</div>
+          </div>
+        `;
+        certificateBox.classList.add("show");
+        certScoreText.textContent = `認定得点：${score}点`;
+      } else if(score >= 70){
+        className += "pass";
+        html = `
+          <div class="${className}">
+            <strong>${score}点 / 100点</strong>
+            合格ラインには到達しています。あと少し復習して満点を目指しましょう♪<br>
+            <div class="score-note">合格証は100点以上で表示されます。</div>
+          </div>
+        `;
+        certificateBox.classList.remove("show");
+        certScoreText.textContent = "";
+      } else {
+        className += "fail";
+        html = `
+          <div class="${className}">
+            <strong>${score}点 / 100点</strong>
+            もう一度マニュアルを読み直して、再挑戦しましょう！<br>
+            <div class="score-note">大切なルールと接客の流れを確認してみてください。</div>
+          </div>
+        `;
+        certificateBox.classList.remove("show");
+        certScoreText.textContent = "";
+      }
+
+      resultBox.innerHTML = html;
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function resetQuiz(){
+      document.getElementById("quizForm").reset();
+      document.getElementById("resultBox").innerHTML = "";
+      document.getElementById("certificateBox").classList.remove("show");
+      document.getElementById("certScoreText").textContent = "";
+      document.getElementById("maidName").value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
